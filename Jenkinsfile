@@ -50,12 +50,13 @@ pipeline {
             steps {
                 script {
                     echo "Deploying backend to eks ..."
+                    def ECR_PWD = sh(script: "aws ecr get-login-password --region ${AWS_REGION}", returnStdout: true)
                     sh "aws eks --region ${AWS_REGION} update-kubeconfig --name ${CLUSTER_NAME}"
                     sh "kubectl apply -f kubernetes/secret.yaml"
-                    sh "aws ecr get-login-password --region ${AWS_REGION} | kubectl create secret docker-registry my-ecr-key \
+                    sh "kubectl create secret docker-registry my-ecr-key \
                     --docker-server=${REGISTRY_URL} \
                     --docker-username=AWS \
-                    --docker-password-stdin"
+                    --docker-password=${ECR_PWD}"
                     sh "kubectl apply -f kubernetes/configmap.yaml"
                     sh "kubectl apply -f kubernetes/mongodb-vol.yaml"
                     sh "kubectl apply -f kubernetes/mongodb.yaml"
@@ -90,14 +91,8 @@ pipeline {
             }
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'aws-root', usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
-                        echo "Deploying frontend to eks ..."
-                        sh "aws ecr get-login-password --region ${AWS_REGION} | kubectl create secret docker-registry my-ecr-key \
-                        --docker-server=${REGISTRY_URL} \
-                        --docker-username=AWS \
-                        --docker-password-stdin"
-                        sh "kubectl apply -f kubernetes/frontend.yaml"
-                    }
+                    echo "Deploying frontend to eks ..."
+                    sh "kubectl apply -f kubernetes/frontend.yaml"
                 }
             }
         }
