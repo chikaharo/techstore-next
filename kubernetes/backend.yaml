@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techstore-backend-deployment
+  labels:
+    app: techstore-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: techstore-backend
+  template:
+    metadata:
+      labels:
+        app: techstore-backend
+    spec:
+      imagePullSecrets:
+        - name: my-ecr-key
+      containers:
+        - name: techstore-backend
+          image: 010438465474.dkr.ecr.ap-southeast-1.amazonaws.com/techstore-api:v0.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: mongo-root-user
+            - name: MONGO_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: mongo-root-password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: jwt-secret
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: jwt-refresh-secret
+            - name: VNP_TmnCode
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: vnp-tmncode
+            - name: VNP_HashSecret
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: vnp-hashsecret
+            - name: MP
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: mail-pwd
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: couldinary-api-key
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: cloudinary-api-secret
+            - name: MONGO_DATABASE_URL
+              value: "mongodb-service:27017"
+            - name: SERVER_URL
+              value: "techstore-backend-service:30060"
+            - name: CLOUDINARY_CLOUD_NAME
+              value: "dbocpgtiv"
+            - name: MAIL_ID
+              value: "rongbattustyle@gmail.com"
+            - name: CORS_ORIGIN_PROD
+              value: "*"
+            - name: CORS_ORIGIN_DEV
+              value: "*"
+            - name: FRONTEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: techstore-configmap
+                  key: frontend_url
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: techstore-backend-service
+spec:
+  selector:
+    app: techstore-backend
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30060

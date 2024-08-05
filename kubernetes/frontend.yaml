@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: techstore-frontend-deployment
+  labels:
+    app: techstore-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: techstore-frontend
+  template:
+    metadata:
+      labels:
+        app: techstore-frontend
+    spec:
+      imagePullSecrets:
+        - name: my-ecr-key
+      containers:
+        - name: techstore-frontend
+          image: 010438465474.dkr.ecr.ap-southeast-1.amazonaws.com/techstore-web:v0.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: nextauth-secret
+            - name: NEXTAUTH_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: jwt-secret
+            - name: AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: techstore-secret
+                  key: auth-secret
+            - name: NEXT_PUBLIC_BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: techstore-configmap
+                  key: backend_url
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: techstore-frontend-service
+spec:
+  selector:
+    app: techstore-frontend
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30090

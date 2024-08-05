@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: techstore-configmap
+data:
+  database_url: mongodb-service:27017
+  frontend_url: techstore-frontend-service:30090
+  backend_url: techstore-backend-service:30060
