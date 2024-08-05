@@ -3,4 +3,4 @@
 	url = https://github.com/chikaharo/techstore-website.git
 [submodule "backend"]
 	path = backend
-	url = https://github.com/chikaharo/techstore-website.git
+	url = https://github.com/chikaharo/techstore-api.git
