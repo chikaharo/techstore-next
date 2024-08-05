@@ -14,7 +14,10 @@ pipeline {
             steps {
                 script {
                     echo 'Init git submodules ...'
+                    sh "git submodule init"
                     sh "git submodule update"
+                    sh "ls frontend/"
+                    sh "ls backend/"
                 }
             }
         }
