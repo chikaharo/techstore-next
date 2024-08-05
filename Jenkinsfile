@@ -53,10 +53,10 @@ pipeline {
                     def ECR_PWD = sh(script: "aws ecr get-login-password --region ${AWS_REGION}", returnStdout: true)
                     sh "aws eks --region ${AWS_REGION} update-kubeconfig --name ${CLUSTER_NAME}"
                     sh "kubectl apply -f kubernetes/secret.yaml"
-                    sh "kubectl create secret docker-registry my-ecr-key \
-                    --docker-server=${REGISTRY_URL} \
-                    --docker-username=AWS \
-                    --docker-password=${ECR_PWD}"
+                    // sh "kubectl create secret docker-registry my-ecr-key \
+                    // --docker-server=${REGISTRY_URL} \
+                    // --docker-username=AWS \
+                    // --docker-password=${ECR_PWD}"
                     sh "kubectl apply -f kubernetes/configmap.yaml"
                     sh "kubectl apply -f kubernetes/mongodb-vol.yaml"
                     sh "kubectl apply -f kubernetes/mongodb.yaml"
