@@ -25,11 +25,9 @@ pipeline {
             steps {
                 script {
                     echo 'Building frontend image ...'
-                    sh "cd frontend/"
-                    sh "docker build -t ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ."
+                    sh "docker build -t ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ./frontend"
                     echo 'Building backend image ...'
-                    sh "cd ../backend/"
-                    sh "docker build -t ${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME} ."
+                    sh "docker build -t ${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME} ./backend"
                 }
             }
         }
