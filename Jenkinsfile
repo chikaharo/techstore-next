@@ -21,11 +21,10 @@ pipeline {
                 }
             }
         }
-        stage("build image") {
+        stage("build backend image") {
             steps {
                 script {
-                    echo 'Building frontend image ...'
-                    sh "docker build -t ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ./frontend"
+                    
                     echo 'Building backend image ...'
                     sh "docker build -t ${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME} ./backend"
                 }
@@ -34,18 +33,16 @@ pipeline {
         stage("push image") {
             steps {
                 script {
-                    echo 'Pushing images to ECR ...'
+                    echo 'Pushing backend image to ECR ...'
                     withCredentials([usernamePassword(credentialsId: 'aws-root', usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
                         sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URL}"
-                        sh "docker tag ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ${REGISTRY_URL}/${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME}"
-                        sh "docker push ${REGISTRY_URL}/${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME}"
                         sh "docker tag ${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME} ${REGISTRY_URL}/${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME}"
                         sh "docker push ${REGISTRY_URL}/${BACKEND_IMAGE_REPO}:${BACKEND_IMAGE_NAME}"
                     }
                 }
             }
         }
-        stage("deploy") {
+        stage("deploy backend ") {
             environment {
                 AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
                 AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
@@ -53,7 +50,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'aws-root', usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
-                        echo "Deploying images to eks ..."
+                        echo "Deploying backend to eks ..."
                         sh "aws eks --region ${AWS_REGION} update-kubeconfig --name ${CLUSTER_NAME}"
                         sh "kubectl apply -f kubernetes/secret.yaml"
                         sh "aws ecr get-login-password --region ${AWS_REGION} | kubectl create secret docker-registry my-ecr-key \
@@ -64,6 +61,43 @@ pipeline {
                         sh "kubectl apply -f kubernetes/mongodb-vol.yaml"
                         sh "kubectl apply -f kubernetes/mongodb.yaml"
                         sh "kubectl apply -f kubernetes/backend.yaml"
+                    }
+                }
+            }
+        }
+        stage("build frontend image") {
+            steps {
+                script {
+                    echo 'Building frontend image ...'
+                    sh "docker build -t ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ./frontend"
+                }
+            }
+        }
+        stage("push frontend image") {
+            steps {
+                script {
+                    echo 'Pushing frontend image to ECR ...'
+                    withCredentials([usernamePassword(credentialsId: 'aws-root', usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${REGISTRY_URL}"
+                        sh "docker tag ${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME} ${REGISTRY_URL}/${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME}"
+                        sh "docker push ${REGISTRY_URL}/${FRONTEND_IMAGE_REPO}:${FRONTEND_IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+        tage("deploy frontend ") {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
+                AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws_secret_access_key')
+            }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'aws-root', usernameVariable: "AWS_ACCESS_KEY_ID", passwordVariable: "AWS_SECRET_ACCESS_KEY")]) {
+                        echo "Deploying frontend to eks ..."
+                        sh "aws ecr get-login-password --region ${AWS_REGION} | kubectl create secret docker-registry my-ecr-key \
+                        --docker-server=${REGISTRY_URL} \
+                        --docker-username=AWS \
+                        --docker-password-stdin"
                         sh "kubectl apply -f kubernetes/frontend.yaml"
                     }
                 }
