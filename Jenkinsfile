@@ -10,13 +10,11 @@ pipeline {
         CLUSTER_NAME = "ecommerce-nextapp-cluster"
     }
     stages {
-        stage("test") {
+        stage("init") {
             steps {
                 script {
-                    echo 'Testing git clone folder ...'
-                    sh "ls"
-                    sh "ls frontend/"
-                    sh "ls backend/"
+                    echo 'Init git submodules ...'
+                    sh "git submodule update"
                 }
             }
         }
