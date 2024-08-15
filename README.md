@@ -1,4 +1,4 @@
-# CICD Implementation Fullstack (Next.js + Node.js) Ecommerce App to AWS EKS
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/b8a3a8c2-be6f-4e7d-87af-6d8d6f798cd1"># CICD Implementation Fullstack (Next.js + Node.js) Techstore Ecommerce App to AWS EKS
 ## Overview 
 This document outlines the structure of a project that includes a full-stack application with distinct frontend and backend components, utilizes MongoDB as its database, and implements container orchestration with Kubernetes. Infrastructure as Code (IaC) is managed using Terraform, and a continuous integration/continuous deployment (CI/CD) process is established through Jenkins.
 
@@ -12,3 +12,6 @@ This document outlines the structure of a project that includes a full-stack app
 
 <img width="720" alt="image" src="https://github.com/user-attachments/assets/9622f73e-84ff-469c-95fd-800bf20da661">
 
+## Demo 
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/4279e116-cba6-420b-836f-9f7a6b9d928e">
+<img width="1440" alt="image" src="https://github.com/user-attachments/assets/be7a8a85-77fc-4615-b11d-9016ebf6b6fa">
