@@ -10,7 +10,7 @@ This document outlines the structure of a project that includes a full-stack app
 - Terraform: used for provisioning cloud infrastructure
 - Jenkinsfile: automate CI/CD pipeline
 
-<img width="720" alt="image" src="https://github.com/user-attachments/assets/9622f73e-84ff-469c-95fd-800bf20da661">
+![Kubernetes Structure](https://github.com/user-attachments/assets/4273b037-6431-4a98-a595-747ac186e8bb)
 
 ## Demo 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/4279e116-cba6-420b-836f-9f7a6b9d928e">
