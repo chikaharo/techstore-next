@@ -15,3 +15,4 @@ This document outlines the structure of a project that includes a full-stack app
 ## Demo 
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/4279e116-cba6-420b-836f-9f7a6b9d928e">
 <img width="1440" alt="image" src="https://github.com/user-attachments/assets/be7a8a85-77fc-4615-b11d-9016ebf6b6fa">
+<img width="1431" alt="image" src="https://github.com/user-attachments/assets/2016c26f-66f3-4c82-9a7d-9b32528128c4">
