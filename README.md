@@ -10,4 +10,5 @@ This document outlines the structure of a project that includes a full-stack app
 - Terraform: used for provisioning cloud infrastructure
 - Jenkinsfile: automate CI/CD pipeline
 
-<img width="556" alt="image" src="https://github.com/user-attachments/assets/5d6f166b-56c3-4326-adce-155023198f50">
+<img width="720" alt="image" src="https://github.com/user-attachments/assets/9622f73e-84ff-469c-95fd-800bf20da661">
+
