@@ -6,7 +6,7 @@ pipeline {
         BACKEND_IMAGE_REPO = 'techstore-api'
         BACKEND_IMAGE_NAME = 'v0.2'
         AWS_REGION = 'ap-southeast-1'
-        REGISTRY_URL = "010438465474.dkr.ecr.${AWS_REGION}.amazonaws.com"
+        REGISTRY_URL = "117001856078.dkr.ecr.${AWS_REGION}.amazonaws.com"
         CLUSTER_NAME = "ecommerce-nextapp-cluster"
     }
     stages {
@@ -18,6 +18,17 @@ pipeline {
                     sh "git submodule update"
                     sh "ls frontend/"
                     sh "ls backend/"
+                }
+            }
+        }
+        stage("Create eks infrastructure") {
+            steps {
+                script {
+                    dir('./terraform/') {
+                        sh "terraform init"
+                        sh "terraform plan"
+                        sh "terraform apply -auto-approve"
+                    }
                 }
             }
         }
